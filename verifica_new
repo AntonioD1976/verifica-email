@@ -1,0 +1,262 @@
+<!DOCTYPE html> <html lang="it"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Verifica email - DV Cardio Center</title> 
+<style> 
+* { box-sizing: border-box; } 
+body { 
+  margin: 0; 
+  min-height: 100vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 20px; 
+  font-family: Arial, Helvetica, sans-serif; 
+  background: linear-gradient( 135deg, #eef7fb 0%, #f7fbfc 50%, #eef8f3 100% ); 
+  color: #263238; 
+} 
+/* ========================================================== CONTENITORE PRINCIPALE ========================================================== */ 
+.box { 
+  width: 100%; 
+  max-width: 520px; 
+  background: #ffffff; 
+  padding: 42px 32px 30px; 
+  border-radius: 18px; 
+  box-shadow: 0 8px 30px rgba(25, 118, 210, 0.10), 0 2px 8px rgba(0, 0, 0, 0.04); 
+  text-align: center; 
+  border-top: 5px solid #1976d2; 
+  animation: fadeIn 0.5s ease-out; 
+} 
+@keyframes fadeIn { 
+  from { 
+    opacity: 0; 
+    transform: translateY(8px); 
+  } 
+  to 
+  { 
+    opacity: 1; 
+    transform: translateY(0); 
+  } 
+} 
+/* ========================================================== TESTATA ========================================================== */ 
+.logo { margin-bottom: 34px; color: #1976d2; font-size: 22px; font-weight: 700; letter-spacing: 0.2px; } 
+.subtitle { margin-top: -25px; margin-bottom: 30px; font-size: 13px; color: #78909c; } 
+/* ========================================================== ICONA ========================================================== */ 
+.icon { 
+  width: 78px; 
+  height: 78px; 
+  margin: 0 auto 22px; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: #e8f5e9; 
+  color: #198754; 
+  font-size: 43px; 
+  font-weight: bold; 
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease; 
+} 
+/* ========================================================== SPINNER ========================================================== */ 
+.spinner { 
+  width: 34px; 
+  height: 34px; 
+  border: 4px solid #d8edf5; 
+  border-top-color: #1976d2; 
+  border-right-color: #2eaa72; 
+  border-radius: 50%; 
+  animation: spin 0.9s linear infinite; 
+} 
+@keyframes spin { to { transform: rotate(360deg); } } 
+/* ========================================================== TITOLI E TESTO ========================================================== */ 
+h1 { margin: 0 0 16px; font-size: 27px; font-weight: 600; color: #263238; } 
+p { margin: 0; font-size: 16px; line-height: 1.65; color: #607d8b; } 
+.loading { color: #78909c; } 
+/* ========================================================== STATO POSITIVO ========================================================== */ 
+.success .icon { background: #e8f5e9; color: #198754; animation: successPop 0.45s ease-out; } 
+.success h1 { color: #19764a; } 
+@keyframes successPop { 0% { transform: scale(0.75); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } } 
+/* ========================================================== STATO LINK SCADUTO ========================================================== */ 
+.expired .icon { background: #fff8e1; color: #d88a00; } .expired h1 { color: #9a6700; } 
+/* ========================================================== STATO ERRORE ========================================================== */ 
+.error .icon { background: #ffebee; color: #c62828; } .error h1 { color: #b02a37; } 
+/* ========================================================== FOOTER ========================================================== */ 
+.footer { margin-top: 34px; padding-top: 21px; border-top: 1px solid #e6ecef; font-size: 13px; line-height: 1.6; color: #78909c; } 
+.footer-name { color: #455a64; font-weight: 600; } 
+/* ========================================================== MOBILE ========================================================== */ 
+@media (max-width: 480px) { body { padding: 14px; } .box { padding: 36px 23px 27px; border-radius: 16px; } .logo { font-size: 20px; margin-bottom: 30px; } h1 { font-size: 24px; } p { font-size: 15px; } .icon { width: 72px; height: 72px; font-size: 39px; } } 
+</style> 
+</head> 
+<body> 
+<div class="box" id="box">
+<!-- ========================================================
+     TESTATA
+     ======================================================== -->
+
+<div class="logo">
+  DV Cardio Center
+</div>
+
+<div class="subtitle">
+  Studio Cardiologico
+</div>
+
+<!-- ========================================================
+     ICONA
+     ======================================================== -->
+
+<div class="icon" id="icon">
+
+  <div class="spinner" id="spinner"></div>
+
+</div>
+
+<!-- ========================================================
+     TITOLO
+     ======================================================== -->
+
+<h1 id="titolo">
+  Verifica in corso
+</h1>
+
+
+<!-- ========================================================
+     MESSAGGIO
+     ======================================================== -->
+
+<p id="messaggio" class="loading">
+  Stiamo verificando il tuo indirizzo email...
+</p>
+
+
+<!-- ========================================================
+     FOOTER
+     ======================================================== -->
+
+<div class="footer">
+
+  <span class="footer-name">
+    Dott. Vincenzo Duino
+  </span>
+  <br>
+
+  Cardiologo
+  <br>
+
+  Via Angelo Maj 30/C - Bergamo
+
+</div>
+
+</div> 
+    <script> 
+    // ========================================================== 
+    // URL DEL WEB APP APPS SCRIPT 
+    // ========================================================== 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb9KPyssvZyoSG6Mh0X-YKy1E2t9LqjwusMCE5_PVDY5nVyJW4bYGiOm4RndUTSi7/exec'; 
+    // ========================================================== 
+    // RECUPERA IL TOKEN DALL'URL 
+    // ========================================================== 
+    const params = new URLSearchParams( window.location.search ); 
+    const token = params.get('token'); 
+    // ========================================================== 
+    // ELEMENTI DELLA PAGINA 
+    // ========================================================== 
+    const box = document.getElementById('box'); 
+    const icon = document.getElementById('icon'); 
+    const spinner = document.getElementById('spinner'); 
+    const titolo = document.getElementById('titolo'); 
+    const messaggio = document.getElementById('messaggio'); 
+    // ========================================================== 
+    // MOSTRA RISULTATO 
+    // ========================================================== 
+    function mostraRisultato( tipo, titoloRisultato, messaggioRisultato, simbolo ) { 
+      // Rimuove eventuali stati precedenti 
+      box.classList.remove( 'success', 'expired', 'error' ); 
+      // Aggiunge il nuovo stato 
+      box.classList.add(tipo); 
+      // Nasconde lo spinner 
+      if (spinner) { 
+        spinner.style.display = 'none'; 
+      } 
+        // Aggiorna icona 
+        icon.textContent = simbolo; 
+      // Aggiorna titolo 
+      titolo.textContent = titoloRisultato; 
+      // Aggiorna messaggio 
+      messaggio.textContent = messaggioRisultato; 
+      // Rimuove classe caricamento 
+      messaggio.classList.remove( 'loading' ); 
+    } 
+      // ========================================================== 
+      // GESTIONE RISPOSTA 
+      // ========================================================== 
+      function handleVerification(data) { 
+        if ( data && data.ok === true ) { 
+          mostraRisultato( 
+            'success', 
+            data.titolo || 'Email verificata', 
+            data.messaggio || 'Il tuo indirizzo email è stato verificato correttamente.', 
+            '✓' 
+          ); 
+          return; 
+        } 
+          // ======================================================== 
+          // LINK SCADUTO 
+          // ======================================================== 
+          if ( data && data.titolo === 'Link scaduto' ) { 
+            mostraRisultato( 
+              'expired', 
+              data.titolo, 
+              data.messaggio || 'Il link di verifica è scaduto. È necessario richiedere una nuova verifica.', 
+              '!' 
+            ); 
+            return; 
+          } 
+            // ======================================================== 
+            // LINK NON VALIDO / GIÀ UTILIZZATO 
+            // ======================================================== 
+            mostraRisultato( 
+              'error', 
+              data && data.titolo ? data.titolo : 'Link non valido', 
+              data && data.messaggio ? data.messaggio : 'Il link di verifica non è valido oppure è già stato utilizzato.', 
+              '×' 
+            ); 
+      } 
+        // ========================================================== 
+        // ESPONE LA FUNZIONE GLOBALMENTE 
+        // ========================================================== 
+        window.handleVerification = handleVerification; 
+        // ========================================================== 
+        // CONTROLLO TOKEN 
+        // ========================================================== 
+        if (!token) { 
+          handleVerification({ 
+            ok: false, 
+            titolo: 'Link non valido', 
+            messaggio: 'Questa pagina deve essere aperta utilizzando il link ricevuto via email.' 
+          }); 
+        } else { 
+          // ======================================================== 
+          // CREA SCRIPT CROSS-DOMAIN 
+          // ======================================================== 
+          const script = document.createElement('script'); 
+          script.src = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token) + '&callback=handleVerification'; 
+          // ======================================================== 
+          // ERRORE DI COMUNICAZIONE 
+          // ======================================================== 
+          script.onerror = function() { 
+            mostraRisultato( 
+              'error', 
+              'Errore', 
+              'Si è verificato un errore durante la verifica. Puoi chiudere questa pagina e riprovare dal link ricevuto via email.', 
+              '×' 
+            ); 
+          }; 
+            // ======================================================== 
+            // AVVIA RICHIESTA 
+            // ======================================================== 
+            document.body.appendChild(script); 
+        } 
+            </script> 
+            </body> 
+            </html>
