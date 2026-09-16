@@ -7,28 +7,22 @@
   DV Cardio Center
 </div>
 
-
 <div class="icon" id="icon">
   ...
 </div>
-
 
 <h1 id="titolo">
   Verifica in corso
 </h1>
 
-
 <p id="messaggio">
   Stiamo verificando il tuo indirizzo email...
 </p>
 
-
 <div class="footer">
 
   Dott. Vincenzo Duino<br>
-
   Cardiologo<br>
-
   Via Angelo Maj 30/C - Bergamo
 
 </div>
@@ -36,44 +30,66 @@
 </div> 
   <script> 
     // ========================================================== 
-    // LEGGE IL RISULTATO PASSATO DA APPS SCRIPT 
+    // URL WEB APP APPS SCRIPT 
+    // ========================================================== 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb9KPyssvZyoSG6Mh0X-YKy1E2t9LqjwusMCE5_PVDY5nVyJW4bYGiOm4RndUTSi7/exec'; 
+    // ========================================================== 
+    // PARAMETRI URL 
     // ========================================================== 
     const params = new URLSearchParams( window.location.search ); 
-    const ok = params.get('ok'); 
-    const titolo = params.get('titolo'); 
-    const messaggio = params.get('messaggio'); 
+    const token = params.get('token'); 
     // ========================================================== 
-    // ELEMENTI DELLA PAGINA 
+    // ELEMENTI PAGINA 
     // ========================================================== 
     const box = document.getElementById('box'); 
     const icon = document.getElementById('icon'); 
-    const titoloElement = document.getElementById('titolo'); 
-    const messaggioElement = document.getElementById('messaggio'); 
+    const titolo = document.getElementById('titolo'); 
+    const messaggio = document.getElementById('messaggio'); 
     // ========================================================== 
-    // RISULTATO POSITIVO 
+    // MOSTRA RISULTATO 
     // ========================================================== 
-    if (ok === '1') { 
-      icon.textContent = '✓'; 
-      titoloElement.textContent = titolo || 'Email verificata'; 
-      messaggioElement.textContent = messaggio || 'Il tuo indirizzo email è stato verificato correttamente.';
-    } 
-    // ========================================================== 
-    // RISULTATO NEGATIVO 
-    // ========================================================== 
-    else if (ok === '0') { 
+    function handleVerification(data) { 
+      if (data && data.ok === true) { 
+        icon.textContent = '✓'; 
+        titolo.textContent = data.titolo || 'Email verificata'; 
+        messaggio.textContent = data.messaggio || 'Il tuo indirizzo email è stato verificato correttamente.'; 
+        return; 
+      } 
+      // ======================================================== 
+      // ERRORE 
+      // ======================================================== 
       box.classList.add('error'); 
       icon.textContent = '×'; 
-      titoloElement.textContent = titolo || 'Verifica non riuscita'; 
-      messaggioElement.textContent = messaggio || 'Non è stato possibile verificare il tuo indirizzo email.'; 
+      titolo.textContent = data && data.titolo ? data.titolo : 'Verifica non riuscita'; 
+      messaggio.textContent = data && data.messaggio ? data.messaggio : 'Non è stato possibile verificare il tuo indirizzo email.'; 
     } 
     // ========================================================== 
-    // ACCESSO DIRETTO ALLA PAGINA 
+    // ESPONE LA FUNZIONE GLOBALMENTE 
     // ========================================================== 
-    else { 
-      box.classList.add('error'); 
-      icon.textContent = '×'; 
-      titoloElement.textContent = 'Link non valido'; 
-      messaggioElement.textContent = 'Questa pagina deve essere aperta utilizzando il link ricevuto via email.'; 
+    window.handleVerification = handleVerification; 
+    // ========================================================== 
+    // CONTROLLO TOKEN 
+    // ========================================================== 
+    if (!token) { 
+      handleVerification({ 
+        ok: false, 
+        titolo: 'Link non valido', 
+        messaggio: 'Questa pagina deve essere aperta utilizzando il link ricevuto via email.' 
+      }); 
+    } else { 
+      // ======================================================== 
+      // CREA SCRIPT CROSS-DOMAIN 
+      // ======================================================== 
+      const script = document.createElement('script'); 
+      script.src = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token) + '&callback=handleVerification'; 
+      script.onerror = function() { 
+        handleVerification({ 
+          ok: false, 
+          titolo: 'Errore', 
+          messaggio: 'Si è verificato un errore durante la verifica. ' + 'Puoi chiudere questa pagina e riprovare dal link ricevuto via email.' 
+        }); 
+      }; 
+      document.body.appendChild(script); 
     } 
   </script> 
 </body> 
