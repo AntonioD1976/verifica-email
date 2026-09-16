@@ -33,4 +33,82 @@
 
 </div>
 
-</div> <script> // ========================================================== // URL DEL WEB APP APPS SCRIPT // ========================================================== const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb9KPyssvZyoSG6Mh0X-YKy1E2t9LqjwusMCE5_PVDY5nVyJW4bYGiOm4RndUTSi7/exec'; // ========================================================== // RECUPERA IL TOKEN DALL'URL // ========================================================== const params = new URLSearchParams( window.location.search ); const token = params.get('token'); // ========================================================== // ELEMENTI DELLA PAGINA // ========================================================== const box = document.getElementById('box'); const icon = document.getElementById('icon'); const titolo = document.getElementById('titolo'); const messaggio = document.getElementById('messaggio'); // ========================================================== // MOSTRA ERRORE // ========================================================== function mostraErrore( titoloErrore, messaggioErrore ) { box.classList.add('error'); icon.textContent = '×'; titolo.textContent = titoloErrore; messaggio.textContent = messaggioErrore; } // ========================================================== // CONTROLLO PRESENZA TOKEN // ========================================================== if (!token) { mostraErrore( 'Link non valido', 'Il link di verifica non è valido.' ); } else { // ======================================================== // CREA URL PER APPS SCRIPT // ======================================================== const url = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token); // ======================================================== // CHIAMATA AD APPS SCRIPT // ======================================================== fetch(url) .then(response => { if (!response.ok) { throw new Error( 'Errore di comunicazione.' ); } return response.json(); }) .then(data => { // ==================================================== // VERIFICA RIUSCITA // ==================================================== if (data.ok === true) { icon.textContent = '✓'; titolo.textContent = 'Email verificata'; messaggio.textContent = 'Il tuo indirizzo email è stato verificato correttamente.'; } else { // ================================================== // VERIFICA FALLITA // ================================================== mostraErrore( data.titolo || 'Verifica non riuscita', data.messaggio || 'Non è stato possibile verificare il tuo indirizzo email.' ); } }) .catch(error => { console.error(error); mostraErrore( 'Errore', 'Si è verificato un errore durante la verifica. ' + 'Puoi chiudere questa pagina e riprovare dal link ricevuto via email.' ); }); } </script> </body> </html>
+</div>
+  <script> 
+    // ========================================================== 
+    // URL DEL WEB APP APPS SCRIPT 
+    // ========================================================== 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb9KPyssvZyoSG6Mh0X-YKy1E2t9LqjwusMCE5_PVDY5nVyJW4bYGiOm4RndUTSi7/exec'; 
+    // ========================================================== 
+    // RECUPERA IL TOKEN DALL'URL 
+    // ========================================================== 
+    const params = new URLSearchParams( window.location.search ); 
+    const token = params.get('token'); 
+    // ========================================================== 
+    // ELEMENTI DELLA PAGINA 
+    // ========================================================== 
+    const box = document.getElementById('box'); 
+    const icon = document.getElementById('icon'); 
+    const titolo = document.getElementById('titolo'); 
+    const messaggio = document.getElementById('messaggio'); 
+    // ========================================================== 
+    // MOSTRA ERRORE 
+    // ========================================================== 
+    function mostraErrore( titoloErrore, messaggioErrore ) { 
+      box.classList.add('error'); 
+      icon.textContent = '×'; 
+      titolo.textContent = titoloErrore; 
+      messaggio.textContent = messaggioErrore; 
+    } 
+    // ========================================================== 
+    // CONTROLLO PRESENZA TOKEN 
+    // ========================================================== 
+    if (!token) { 
+      mostraErrore( 'Link non valido', 'Il link di verifica non è valido.' ); 
+    } else { 
+      // ======================================================== 
+      // CREA URL PER APPS SCRIPT 
+      // ======================================================== 
+      const url = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token); 
+      // ======================================================== 
+      // CHIAMATA AD APPS SCRIPT 
+      // ======================================================== 
+      fetch(url) 
+        .then(response => 
+          { 
+            if (!response.ok) { 
+              throw new Error( 
+                'Errore di comunicazione.' 
+              ); 
+            } return response.json(); 
+          }) 
+        .then(data => { 
+          // ==================================================== 
+          // VERIFICA RIUSCITA 
+          // ==================================================== 
+          if (data.ok === true) { 
+            icon.textContent = '✓'; 
+            titolo.textContent = 'Email verificata'; 
+            messaggio.textContent = 'Il tuo indirizzo email è stato verificato correttamente.';
+          } else { 
+            // ================================================== 
+            // VERIFICA FALLITA 
+            // ================================================== 
+            mostraErrore( 
+              data.titolo || 'Verifica non riuscita', 
+              data.messaggio || 'Non è stato possibile verificare il tuo indirizzo email.' 
+            ); 
+          } 
+        }) 
+        .catch(error => { 
+          console.error(error); 
+          mostraErrore( 
+            'Errore', 
+            'Si è verificato un errore durante la verifica. ' + 
+            'Puoi chiudere questa pagina e riprovare dal link ricevuto via email.' 
+          ); 
+        }); 
+    } 
+  </script> 
+</body> 
+</html>
