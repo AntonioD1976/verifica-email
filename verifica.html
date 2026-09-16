@@ -2,7 +2,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Verifica email - DV Cardio Center</title> <style> * { box-sizing: border-box; } body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; font-family: Arial, Helvetica, sans-serif; background: #f5f7fa; color: #333; } .box { width: 100%; max-width: 500px; background: #ffffff; padding: 40px 30px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); text-align: center; } .logo { font-size: 21px; font-weight: bold; color: #1976d2; margin-bottom: 30px; } .icon { width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #e8f5e9; color: #198754; font-size: 42px; font-weight: bold; } h1 { margin: 0 0 15px; font-size: 26px; color: #333; } p { margin: 0; font-size: 16px; line-height: 1.6; color: #666; } .loading { color: #666; } .error .icon { background: #ffebee; color: #dc3545; } .error h1 { color: #b02a37; } .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eeeeee; font-size: 13px; line-height: 1.5; color: #888; } </style> </head> <body> <div class="box" id="box">
+<title>Verifica email - DV Cardio Center</title> <style> * { box-sizing: border-box; } body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; font-family: Arial, Helvetica, sans-serif; background: #f5f7fa; color: #333; } .box { width: 100%; max-width: 500px; background: #ffffff; padding: 40px 30px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); text-align: center; } .logo { font-size: 21px; font-weight: bold; color: #1976d2; margin-bottom: 30px; } .icon { width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #e8f5e9; color: #198754; font-size: 42px; font-weight: bold; } h1 { margin: 0 0 15px; font-size: 26px; color: #333; } p { margin: 0; font-size: 16px; line-height: 1.6; color: #666; } .error .icon { background: #ffebee; color: #dc3545; } .error h1 { color: #b02a37; } .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eeeeee; font-size: 13px; line-height: 1.5; color: #888; } </style> </head> <body> <div class="box" id="box">
 <div class="logo">
   DV Cardio Center
 </div>
@@ -18,7 +18,7 @@
 </h1>
 
 
-<p id="messaggio" class="loading">
+<p id="messaggio">
   Stiamo verificando il tuo indirizzo email...
 </p>
 
@@ -33,81 +33,47 @@
 
 </div>
 
-</div>
+</div> 
   <script> 
     // ========================================================== 
-    // URL DEL WEB APP APPS SCRIPT 
-    // ========================================================== 
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb9KPyssvZyoSG6Mh0X-YKy1E2t9LqjwusMCE5_PVDY5nVyJW4bYGiOm4RndUTSi7/exec'; 
-    // ========================================================== 
-    // RECUPERA IL TOKEN DALL'URL 
+    // LEGGE IL RISULTATO PASSATO DA APPS SCRIPT 
     // ========================================================== 
     const params = new URLSearchParams( window.location.search ); 
-    const token = params.get('token'); 
+    const ok = params.get('ok'); 
+    const titolo = params.get('titolo'); 
+    const messaggio = params.get('messaggio'); 
     // ========================================================== 
     // ELEMENTI DELLA PAGINA 
     // ========================================================== 
     const box = document.getElementById('box'); 
     const icon = document.getElementById('icon'); 
-    const titolo = document.getElementById('titolo'); 
-    const messaggio = document.getElementById('messaggio'); 
+    const titoloElement = document.getElementById('titolo'); 
+    const messaggioElement = document.getElementById('messaggio'); 
     // ========================================================== 
-    // MOSTRA ERRORE 
+    // RISULTATO POSITIVO 
     // ========================================================== 
-    function mostraErrore( titoloErrore, messaggioErrore ) { 
-      box.classList.add('error'); 
-      icon.textContent = '×'; 
-      titolo.textContent = titoloErrore; 
-      messaggio.textContent = messaggioErrore; 
+    if (ok === '1') { 
+      icon.textContent = '✓'; 
+      titoloElement.textContent = titolo || 'Email verificata'; 
+      messaggioElement.textContent = messaggio || 'Il tuo indirizzo email è stato verificato correttamente.';
     } 
     // ========================================================== 
-    // CONTROLLO PRESENZA TOKEN 
+    // RISULTATO NEGATIVO 
     // ========================================================== 
-    if (!token) { 
-      mostraErrore( 'Link non valido', 'Il link di verifica non è valido.' ); 
-    } else { 
-      // ======================================================== 
-      // CREA URL PER APPS SCRIPT 
-      // ======================================================== 
-      const url = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token); 
-      // ======================================================== 
-      // CHIAMATA AD APPS SCRIPT 
-      // ======================================================== 
-      fetch(url) 
-        .then(response => 
-          { 
-            if (!response.ok) { 
-              throw new Error( 
-                'Errore di comunicazione.' 
-              ); 
-            } return response.json(); 
-          }) 
-        .then(data => { 
-          // ==================================================== 
-          // VERIFICA RIUSCITA 
-          // ==================================================== 
-          if (data.ok === true) { 
-            icon.textContent = '✓'; 
-            titolo.textContent = 'Email verificata'; 
-            messaggio.textContent = 'Il tuo indirizzo email è stato verificato correttamente.';
-          } else { 
-            // ================================================== 
-            // VERIFICA FALLITA 
-            // ================================================== 
-            mostraErrore( 
-              data.titolo || 'Verifica non riuscita', 
-              data.messaggio || 'Non è stato possibile verificare il tuo indirizzo email.' 
-            ); 
-          } 
-        }) 
-        .catch(error => { 
-          console.error(error); 
-          mostraErrore( 
-            'Errore', 
-            'Si è verificato un errore durante la verifica. ' + 
-            'Puoi chiudere questa pagina e riprovare dal link ricevuto via email.' 
-          ); 
-        }); 
+    else if (ok === '0') { 
+      box.classList.add('error'); 
+      icon.textContent = '×'; 
+      titoloElement.textContent = titolo || 'Verifica non riuscita'; 
+      messaggioElement.textContent = messaggio || 'Non è stato possibile verificare il tuo indirizzo email.'; 
+    } 
+    // ========================================================== 
+    // ACCESSO DIRETTO ALLA PAGINA 
+    // ========================================================== 
+    else { 
+      box.classList.add('error'); 
+      icon.textContent = '×'; 
+      titoloElement.textContent = 'Link non valido'; 
+      messaggioElement.textContent = 'Questa pagina deve essere aperta utilizzando il link ricevuto via email.'; 
     } 
   </script> 
 </body> 
