@@ -259,7 +259,9 @@ p { margin: 0; font-size: 16px; line-height: 1.65; color: #607d8b; }
           // CREA SCRIPT CROSS-DOMAIN 
           // ======================================================== 
           const script = document.createElement('script'); 
-          script.src = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token) + '&callback=handleVerification'; 
+          //script.src = APPS_SCRIPT_URL + '?action=verify' + '&token=' + encodeURIComponent(token) + '&callback=handleVerification'; 
+          // Costruiamo l'URL usando i backtick ( ` ) per evitare errori con i "+" e le "&"
+          script.src = `${APPS_SCRIPT_URL}?action=verify&token=${encodeURIComponent(token)}&version=${encodeURIComponent(version)}&callback=handleVerification`;
           // ======================================================== 
           // ERRORE DI COMUNICAZIONE 
           // ======================================================== 
