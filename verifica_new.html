@@ -255,6 +255,23 @@ p { margin: 0; font-size: 16px; line-height: 1.65; color: #607d8b; }
             messaggio: 'Questa pagina deve essere aperta utilizzando il link ricevuto via email.' 
           }); 
         } else { 
+          // 1. Log di controllo per vedere cosa sta succedendo in console (F12)
+          console.log("--- DEBUG VERIFICA ---");
+          console.log("Token:", token);
+          console.log("Versione rilevata dall'URL:", version);
+          console.log("URL finale selezionato:", APPS_SCRIPT_URL);
+
+          // 2. Controllo di sicurezza: se l'URL non è valido, si ferma subito senza generare l'errore di rete
+          if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('XXXXXXX') || APPS_SCRIPT_URL === 'undefined') {
+            mostraRisultato(
+              'error',
+              'Configurazione Errata',
+              'L\'URL di Google Apps Script per la versione "' + version + '" non è configurato correttamente.',
+              '×'
+            );
+            return; // Blocca l'esecuzione
+          }
+          
           // ======================================================== 
           // CREA SCRIPT CROSS-DOMAIN 
           // ======================================================== 
